@@ -8,16 +8,29 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws FileNotFoundException {
-        /*
-        System.out.println("Welcome to Hangman! \n" +
+    private static final String WORDS_FILE_PATH = "D:\\SOGYO\\java-opdrachten\\src\\main\\resources\\beginner\\random-words.txt";
+    private static final List<String> wordList;
+    private static int playerGuessLeft = 10;
+
+    static {
+        wordList = new ArrayList<>();
+        try (Scanner scanWords = new Scanner(new File(WORDS_FILE_PATH))) {
+            while (scanWords.hasNext()) {
+                wordList.add(scanWords.nextLine().toUpperCase());
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("Failed to load words from file: " + e.getMessage());
+            System.exit(1);
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Welcome to Hangman!\n" +
                 "In this game, you will be guessing a word that has been\n" +
                 "randomly picked from a list of words. You will guess a letter, and if it’s\n" +
                 "contained in the word, the corresponding letters in the word will be shown. If\n" +
                 "it’s not in the word, you will lose a guess. Be careful, as you only have 10\n" +
-                "wrong guesses before the computer wins. Good luck!\n\n");
-        */
-
+                "wrong guesses before the computer wins. Good luck!\n");
 
         Scanner keyboard = new Scanner(System.in);
 
@@ -26,7 +39,7 @@ public class Main {
 
         List<Character> playerGuesses = new ArrayList<>();
 
-        while (true){
+        while (true) {
             printWordState(word, playerGuesses);
             getPlayerGuessedLetter(keyboard, word, playerGuesses);
             printWordState(word, playerGuesses);
@@ -49,80 +62,51 @@ public class Main {
 
     public static void printWordState(String word, List<Character> playerGuesses) {
         int correctCount = 0;
-        for (int i = 0; i < word.length(); i++){
-            if (playerGuesses.contains(word.charAt(i))){
-                System.out.print(word.charAt(i));
+        for (char c : word.toCharArray()) {
+            if (playerGuesses.contains(c)) {
+                System.out.print(c);
                 correctCount++;
             } else {
                 System.out.print("-");
             }
         }
-        if (!(word.length() == correctCount)){
-            System.out.println();
-        } else {
-            System.out.println("You win!");
-        }
+        System.out.println(correctCount == word.length() ? "\nYou win!" : "");
     }
 
-    static int playerGuessLeft = 10;
-    private static void getPlayerGuessedLetter(Scanner keyboard, String word, List<Character> playerGuess){
-        char guessedLetterOfPlayer;
-        do {
+    private static void getPlayerGuessedLetter(Scanner keyboard, String word, List<Character> playerGuess) {
+        char guessedLetter;
+        while (true) {
             System.out.print("\nPlease enter a letter: ");
             String playerInput = keyboard.nextLine().toUpperCase();
 
-            if (playerInput.length() == 1) {
-                guessedLetterOfPlayer = playerInput.charAt(0);
-                if (Character.isLetter(guessedLetterOfPlayer)) {
-                    break;  // Exit the loop if a valid character is entered
-                }
+            if (playerInput.length() == 1 && Character.isLetter(playerInput.charAt(0))) {
+                guessedLetter = playerInput.charAt(0);
+                break; // Exit the loop if a valid character is entered
             }
 
-            System.out.println("Invalid player Input! Please enter a letter.");
-        } while (true);
-        //System.out.println("You entered the character: " + guessedLetterOfPlayer);
-
-        int index = word.indexOf(guessedLetterOfPlayer);
-
-        if (index != -1) {
-            playerGuess.add(guessedLetterOfPlayer);
-            //printWordState(word, playerGuesses);
-        } else {
-            playerGuessLeft--;
-            System.out.println(playerGuessLeft + " guesses left. Missed Letter: " + guessedLetterOfPlayer);
+            System.out.println("Invalid input! Please enter a letter.");
         }
 
+        if (word.indexOf(guessedLetter) != -1) {
+            playerGuess.add(guessedLetter);
+        } else {
+            System.out.println((--playerGuessLeft) + " guesses left. Missed Letter: " + guessedLetter);
+        }
     }
 
-    private static void getPlayerGuessedWord(Scanner keyboard, String word){
-        String guessedWordOfPlayer;
-
+    private static void getPlayerGuessedWord(Scanner keyboard, String word) {
         System.out.print("\nPlease enter your guess for the word: ");
-        String playerInput = keyboard.nextLine().toUpperCase();
+        String guessedWord = keyboard.nextLine().toUpperCase();
 
-        if (playerInput.equals(word)) {
+        if (guessedWord.equals(word)) {
             System.out.println("You win!");
         } else {
-            guessedWordOfPlayer = playerInput;
-            playerGuessLeft--;
-            System.out.println(playerGuessLeft + " guesses left. Missed Word: " + guessedWordOfPlayer);
+            System.out.println((--playerGuessLeft) + " guesses left. Missed Word: " + guessedWord);
         }
-
-        //printWordState(word, playerGuess);
     }
 
-    public static String pickAWord() throws FileNotFoundException {
-        Scanner scanWords = new Scanner(new File("C:\\Users\\sogyo\\SogyoWorkspace\\java-opdrachten\\src\\main\\resources\\beginner\\random-words.txt"));
-
-        List<String> words = new ArrayList<>();
-        while (scanWords.hasNext()){
-            words.add(scanWords.nextLine().toUpperCase());
-        }
-
+    public static String pickAWord() {
         Random random = new Random();
-        String word = words.get(random.nextInt(words.size()));
-        //System.out.println(word);
-        return word;
+        return wordList.get(random.nextInt(wordList.size()));
     }
-
 }
