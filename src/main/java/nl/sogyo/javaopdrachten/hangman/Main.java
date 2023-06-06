@@ -18,13 +18,17 @@ public class Main {
                 "wrong guesses before the computer wins. Good luck!\n\n");
         */
 
+        Scanner keyboard = new Scanner(System.in);
+
         String word = pickAWord();
         System.out.println(word);
 
         List<Character> playerGuesses = new ArrayList<>();
         printWordState(word, playerGuesses);
-        playerGuesses.add(getPlayerGuess());
-        printWordState(word, playerGuesses);
+
+        while (true){
+            getPlayerGuess(keyboard, word,playerGuesses);
+        }
     }
 
     public static void printWordState(String word, List<Character> playerGuesses) {
@@ -38,26 +42,25 @@ public class Main {
         System.out.println();
     }
 
-    public static char getPlayerGuess(){
-        Scanner keyboard = new Scanner(System.in);
-        char userInput;
-
+    private static void getPlayerGuess(Scanner keyboard, String word, List<Character> playerGuess){
+        char letterGuess;
         do {
             System.out.print("Please enter a letter: ");
-            String input = keyboard.nextLine().toUpperCase();
+            String playerInput = keyboard.nextLine().toUpperCase();
 
-            if (input.length() == 1) {
-                userInput = input.charAt(0);
-                if (Character.isLetter(userInput)) {
+            if (playerInput.length() == 1) {
+                letterGuess = playerInput.charAt(0);
+                if (Character.isLetter(letterGuess)) {
                     break;  // Exit the loop if a valid character is entered
                 }
             }
 
-            System.out.println("Invalid input! Please enter a letter.");
+            System.out.println("Invalid player Input! Please enter a letter.");
         } while (true);
+        //System.out.println("You entered the character: " + letterGuess);
 
-        //System.out.println("You entered the character: " + userInput);
-        return userInput;
+        playerGuess.add(letterGuess);
+        printWordState(word, playerGuess);
     }
 
     public static String pickAWord() throws FileNotFoundException {
