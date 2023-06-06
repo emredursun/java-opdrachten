@@ -18,49 +18,97 @@ public class Main {
                 "wrong guesses before the computer wins. Good luck!\n\n");
         */
 
+
         Scanner keyboard = new Scanner(System.in);
 
         String word = pickAWord();
         System.out.println(word);
 
         List<Character> playerGuesses = new ArrayList<>();
-        printWordState(word, playerGuesses);
 
         while (true){
-            getPlayerGuess(keyboard, word,playerGuesses);
+            printWordState(word, playerGuesses);
+            getPlayerGuessedLetter(keyboard, word, playerGuesses);
+            printWordState(word, playerGuesses);
+            getPlayerGuessedWord(keyboard, word);
+
+//            if (printWordState(word, playerGuesses)){
+//                System.out.println("\nYou win!");
+//                break;
+//            }
+//
+//            System.out.print("\nPlease enter your guess for the word: ");
+//            if (keyboard.nextLine().toUpperCase().equals(word)){
+//                System.out.println("\nYou win!");
+//                break;
+//            } else {
+//                System.out.println("Nope! Try again.");
+//            }
         }
     }
 
     public static void printWordState(String word, List<Character> playerGuesses) {
+        int correctCount = 0;
         for (int i = 0; i < word.length(); i++){
             if (playerGuesses.contains(word.charAt(i))){
                 System.out.print(word.charAt(i));
+                correctCount++;
             } else {
                 System.out.print("-");
             }
         }
-        System.out.println();
+        if (!(word.length() == correctCount)){
+            System.out.println();
+        } else {
+            System.out.println("You win!");
+        }
     }
 
-    private static void getPlayerGuess(Scanner keyboard, String word, List<Character> playerGuess){
-        char letterGuess;
+    static int playerGuessLeft = 10;
+    private static void getPlayerGuessedLetter(Scanner keyboard, String word, List<Character> playerGuess){
+        char guessedLetterOfPlayer;
         do {
-            System.out.print("Please enter a letter: ");
+            System.out.print("\nPlease enter a letter: ");
             String playerInput = keyboard.nextLine().toUpperCase();
 
             if (playerInput.length() == 1) {
-                letterGuess = playerInput.charAt(0);
-                if (Character.isLetter(letterGuess)) {
+                guessedLetterOfPlayer = playerInput.charAt(0);
+                if (Character.isLetter(guessedLetterOfPlayer)) {
                     break;  // Exit the loop if a valid character is entered
                 }
             }
 
             System.out.println("Invalid player Input! Please enter a letter.");
         } while (true);
-        //System.out.println("You entered the character: " + letterGuess);
+        //System.out.println("You entered the character: " + guessedLetterOfPlayer);
 
-        playerGuess.add(letterGuess);
-        printWordState(word, playerGuess);
+        int index = word.indexOf(guessedLetterOfPlayer);
+
+        if (index != -1) {
+            playerGuess.add(guessedLetterOfPlayer);
+            //printWordState(word, playerGuesses);
+        } else {
+            playerGuessLeft--;
+            System.out.println(playerGuessLeft + " guesses left. Missed Letter: " + guessedLetterOfPlayer);
+        }
+
+    }
+
+    private static void getPlayerGuessedWord(Scanner keyboard, String word){
+        String guessedWordOfPlayer;
+
+        System.out.print("\nPlease enter your guess for the word: ");
+        String playerInput = keyboard.nextLine().toUpperCase();
+
+        if (playerInput.equals(word)) {
+            System.out.println("You win!");
+        } else {
+            guessedWordOfPlayer = playerInput;
+            playerGuessLeft--;
+            System.out.println(playerGuessLeft + " guesses left. Missed Word: " + guessedWordOfPlayer);
+        }
+
+        //printWordState(word, playerGuess);
     }
 
     public static String pickAWord() throws FileNotFoundException {
