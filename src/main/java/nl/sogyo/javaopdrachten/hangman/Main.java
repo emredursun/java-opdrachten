@@ -8,7 +8,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
-    private static final String WORDS_FILE_PATH = "D:\\SOGYO\\java-opdrachten\\src\\main\\resources\\beginner\\random-words.txt";
+    private static final String WORDS_FILE_PATH = "src/main/resources/beginner/random-words.txt";
     private static final List<String> wordList;
     private static int playerGuessLeft = 10;
 
