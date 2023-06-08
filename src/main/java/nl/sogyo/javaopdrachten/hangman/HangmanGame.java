@@ -38,7 +38,6 @@ public class HangmanGame {
             guessedLetters.add(guessedLetter);
 
             if (word.indexOf(guessedLetter) != -1) {
-                //System.out.println((MAX_GUESSES - guessedLetters.size()) + " guesses left.");
                 if (hasWon(word, guessedLetters)) {
                     System.out.println("You win!");
                     break;
