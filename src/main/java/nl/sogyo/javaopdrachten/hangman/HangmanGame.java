@@ -24,16 +24,12 @@ public class HangmanGame {
     }
 
     public static void main(String[] args) {
-        System.out.println("Welcome to Hangman!\n" +
-                "In this game, you will be guessing a word that has been\n" +
-                "randomly picked from a list of words. You will guess a letter, and if it’s\n" +
-                "contained in the word, the corresponding letters in the word will be shown. If\n" +
-                "it’s not in the word, you will lose a guess. Be careful, as you only have 10\n" +
-                "wrong guesses before the computer wins. Good luck!\n");
 
+        showInstructions();
+        waitForUserToStart();
+        clearConsole();
 
         String word = getRandomWord();
-        System.out.println(word);
         List<Character> guessedLetters = new ArrayList<>();
 
         while (true) {
@@ -55,6 +51,26 @@ public class HangmanGame {
                     break;
                 }
             }
+        }
+    }
+    private static void showInstructions() {
+        System.out.println("Welcome to Hangman!\n" +
+                "In this game, you will be guessing a word that has been\n" +
+                "randomly picked from a list of words. You will guess a letter, and if it’s\n" +
+                "contained in the word, the corresponding letters in the word will be shown. If\n" +
+                "it’s not in the word, you will lose a guess. Be careful, as you only have 10\n" +
+                "wrong guesses before the computer wins. Good luck!");
+    }
+
+    private static void waitForUserToStart() {
+        System.out.print("\nPress enter to start the game... ");
+        keyboard.nextLine();
+    }
+
+    public static void clearConsole() {
+        // Print multiple empty lines to simulate clearing the console
+        for (int i = 0; i < 50; i++) {
+            System.out.println();
         }
     }
 
@@ -95,4 +111,3 @@ public class HangmanGame {
         return wordList.get(random.nextInt(wordList.size()));
     }
 }
-
