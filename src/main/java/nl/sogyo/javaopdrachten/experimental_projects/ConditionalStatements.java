@@ -25,15 +25,15 @@ public class ConditionalStatements {
                 dayName.equalsIgnoreCase("Wednesday") ||
                 dayName.equalsIgnoreCase("Thursday") ||
                 dayName.equalsIgnoreCase("Friday");
+        boolean isWeekendDayName = dayName.equalsIgnoreCase("Saturday") ||
+                dayName.equalsIgnoreCase("Sunday");
 
         if (isWeekdayName) {
             System.out.println(dayName.toUpperCase() + " is a Weekday!");
-        } else {
-            boolean isWeekendDayName = dayName.equalsIgnoreCase("Saturday") ||
-                    dayName.equalsIgnoreCase("Sunday");
-            if (isWeekendDayName) {
+        }
+
+        if (isWeekendDayName) {
                 System.out.println(dayName.toUpperCase() + " is a Weekend Day!");
-            }
         }
 
         tryAgain();
