@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Quote_V2 {
-    private static List<QuoteObj> quotes = new ArrayList<>();
+    static LocalDate currentDate = LocalDate.now();
+    private static final List<QuoteObj> quotes = new ArrayList<>();
 
     static {
         quotes.add(new QuoteObj("galileo", "eppur si muove"));
@@ -18,6 +19,8 @@ public class Quote_V2 {
     }
 
     public static void main(String... args) {
+        printAuthorsQuotes();
+        System.out.println("================================================");
         boolean tryAgain = true;
 
         while (tryAgain) {
@@ -27,43 +30,74 @@ public class Quote_V2 {
         }
     }
 
+    private static void printAuthorsQuotes(){
+        StringBuilder sb = new StringBuilder();
+        for (QuoteObj quote : quotes) {
+            sb.append("Author: ")
+                    .append(quote.getAuthorName())
+                    .append(" => Quote: ")
+                    .append(quote.getQuoteText())
+                    .append("\n");
+        }
+        System.out.println(sb.toString());
+    }
+
     private static class QuoteObj {
-        private String author;
-        private String quote;
+        private final String authorName;
+        private final String quoteText;
 
-        public QuoteObj(String author, String quote) {
-            this.author = author;
-            this.quote = quote;
+        public QuoteObj(String authorName, String quoteText) {
+            this.authorName = authorName;
+            this.quoteText = quoteText;
         }
 
-        public String getAuthor() {
-            return author;
+        public String getAuthorName() {
+            return authorName;
         }
 
-        public String getQuote() {
-            return quote;
+        public String getQuoteText() {
+            return quoteText;
         }
     }
 
-    private static void printQuoteOfDay(){
-        int dayOfYear = LocalDate.now().getDayOfYear();
+    public static void printDay() {
+        String dateString = String.format("\nQuote for %s the %d%s of %s:",
+                currentDate.getDayOfWeek(),
+                currentDate.getDayOfMonth(),
+                getDayOfMonthSuffix(currentDate.getDayOfMonth()),
+                currentDate.getMonth()
+        );
+        System.out.println(dateString);
+    }
+
+    private static String getDayOfMonthSuffix(int day) {
+        if ((day >= 11 && day <= 13) || (day >= 21 && day <= 23) || (day == 31)) {
+            return "th";
+        }
+        switch (day % 10) {
+            case 1:  return "st";
+            case 2:  return "nd";
+            case 3:  return "rd";
+            default: return "th";
+        }
+    }
+
+    private static void printQuoteOfDay() {
+        int dayOfYear = currentDate.getDayOfYear();
         int index = (dayOfYear - 1) % quotes.size();
+
         QuoteObj selectedQuote = quotes.get(index);
+        String quoteText = selectedQuote.getQuoteText();
+        String authorName = selectedQuote.getAuthorName();
 
-        String quoteText = selectedQuote.getQuote();
-        String quoteOwner = selectedQuote.getAuthor();
-
-        String modifiedQuote = Character.toUpperCase(quoteText.charAt(0)) + quoteText.substring(1) + ".";
+        char firstChar = Character.toUpperCase(quoteText.charAt(0));
+        String modifiedQuote = firstChar + quoteText.substring(1) + ".";
         modifiedQuote = modifiedQuote.replaceAll("\\.{2,}$", ".");
 
-        String modifiedOwner = quoteOwner.substring(0, 1).toUpperCase() + quoteOwner.substring(1);
+        String modifiedOwner = authorName.substring(0, 1).toUpperCase() + authorName.substring(1);
 
-        System.out.println("\"" + modifiedQuote + "\"" + " -- " + modifiedOwner);
-    }
-
-    private static void printDay(){
-        LocalDate today = LocalDate.now();
-        System.out.println("Quote for " + today.getDayOfWeek() + " the " + today.getDayOfMonth() + "th of " + today.getMonth() + ":");
+        String output = String.format("\"%s\" -- %s", modifiedQuote, modifiedOwner);
+        System.out.println(output);
     }
 
     private static boolean tryAgain(){
