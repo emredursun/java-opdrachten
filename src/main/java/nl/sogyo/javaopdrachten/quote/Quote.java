@@ -1,7 +1,6 @@
 package nl.sogyo.javaopdrachten.quote;
 
 import java.time.LocalDate;
-import java.util.Scanner;
 
 public class Quote {
     String[][] quotes = {
@@ -15,38 +14,25 @@ public class Quote {
 
     public static void main(String... args) {
         //TODO
-        boolean tryAgain = true;
+        LocalDate today = LocalDate.now();
+        String dayOfWeek = String.valueOf(today.getDayOfWeek());
+        int dayOfMonth = today.getDayOfMonth();
+        String monthOfYear = String.valueOf(today.getMonth());
+        int dayOfYear = today.getDayOfYear();
 
-        while (tryAgain) {
-            printDay();
-            printQuoteOfDay();
-            tryAgain = tryAgain();
-        }
+        printDay(dayOfWeek, dayOfMonth, monthOfYear);
+        printQuoteOfDay(dayOfYear);
     }
 
-    public static boolean tryAgain(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("\nWould you like to try again? (yes or no): ");
-        String response = scanner.next().toLowerCase();
-        if (response.equals("yes")) {
-            return true;
-        } else if (response.equals("no")) {
-            System.out.println("\nKeep in progress! Execution stopped...\n");
-            return false;
-        } else {
-            System.out.println("\nInvalid input!!!");
-            return tryAgain();
-        }
-    }
-
-    public static void printQuoteOfDay(){
+    public static void printQuoteOfDay(int dayOfYear){
         Quote quotes = new Quote();
-        int dayOfYear = LocalDate.now().getDayOfYear();
         int index = (dayOfYear - 1) % quotes.quotes.length;
         String[] selectedQuote = quotes.quotes[index];
 
         String quoteText = selectedQuote[1];
-        String quoteOwner = selectedQuote[0];
+        String quoteOwner = capitalize(selectedQuote[0]);
+
+
 
         String modifiedQuote = "\"" + quoteText.substring(0, 1).toUpperCase() + quoteText.substring(1);
         String modifiedOwner = quoteOwner.substring(0, 1).toUpperCase() + quoteOwner.substring(1);
@@ -58,8 +44,41 @@ public class Quote {
         }
     }
 
-    public static void printDay(){
-        LocalDate today = LocalDate.now();
-        System.out.println("Quote for " + today.getDayOfWeek() + " the " + today.getDayOfMonth() + "th of " + today.getMonth() + ":");
+    public static String capitalize(String author) {
+        String[] words = author.split(" ");
+        StringBuilder result = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) {  // Skip empty words
+                String capitalizedWord = Character.toUpperCase(word.charAt(0)) + word.substring(1);
+                result.append(capitalizedWord).append(" ");
+            }
+        }
+
+        return result.toString().trim();  // Trim leading/trailing spaces
+    }
+
+    private static void printDay(String dayOfWeek, int dayOfMonth, String monthOfYear){
+        String formattedString = String.format("\nQuote for %s the %d%s of %s:", dayOfWeek, dayOfMonth, printSuffix(dayOfMonth), monthOfYear);
+        System.out.println(formattedString);
+    }
+
+
+    private static String printSuffix(int dayOfMonth){
+        String suffix;
+        switch (dayOfMonth){
+            case 1:
+                suffix = "st";
+                break;
+            case 2:
+                suffix = "nd";
+                break;
+            case 3:
+                suffix = "rd";
+                break;
+            default:
+                suffix = "th";
+        }
+        return suffix;
     }
 }
