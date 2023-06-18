@@ -21,7 +21,7 @@ public class User {
                         System.out.println("Registered user " + username);
                         break;
                     } catch (Exception e) {
-                        System.out.println("Something has gone wrong.");
+                        System.out.println("Something has gone wrong. Error message: " + e.getMessage());
                     }
                 } else {
                     System.out.println(
